@@ -1,23 +1,44 @@
 const dataset = require("./data");  // imported dataset
 const readLineSync = require("readline-sync");
 
-
-const n = dataset.category.data.length; // store the length of the question array
-let correctAnswer = 0;
-
-function showQuestionAnswer() {
-    for (let i = 0; i < n; i++) {
-        console.log(`Q${i + 1} - ${dataset.category.data[i].question}\n`);
-        for (let key in dataset.category.data[i].options) {
-            console.log(`     ${key}:${dataset.category.data[i].options[key]}`);
-        }
-        console.log("\n");
-        let userAnswer = readLineSync.question("Enter your answer:- ");
-        if(userAnswer === dataset.category.data[i].correctAnswer){
-            correctAnswer++;
-        }
-    }
+// to show category of the quiz
+function showCategory() {
+    const categories = Object.keys(dataset.category);
+    console.log("Available Categories:\n");
+    categories.forEach((cat, index) => {
+        console.log(`${index + 1}. ${cat}`);
+    });
+    return categories;
 }
 
-showQuestionAnswer();
-console.log(`Your got ${correctAnswer}/${n} correct answers`);
+function showQuestionAnswer(categoryName) {
+    const questions = dataset.category[categoryName];
+    const n = questions.length;
+    let correctAnswer = 0;
+    for (let i = 0; i < n; i++) {
+        console.log(`${i + 1}.${questions[i].question}\n`);
+        for (let key in questions[i].options) {
+            console.log(`${key}: ${questions[i].options[key]}`);
+        }
+        let userAnswer = readLineSync.question("Enter your answer:");
+        if(userAnswer.toLowerCase() === questions[i].correctAnswer.toLowerCase()){
+            console.log("✅ Correct!\n");
+            correctAnswer++;
+        }
+        else{
+            console.log("❌ Wrong! Correct/n");
+        }
+    }
+    console.log(`You got ${correctAnswer}/${n} answers`);
+}
+
+const categories = showCategory();
+let userCategory = readLineSync.questionInt("Which category you want to choose :");
+if (userCategory < 1 || userCategory > categories.length) {
+    console.log("Invalid Input : Out of scope");
+}
+else {
+    const selectedCategory = categories[userCategory - 1];
+    console.log(`You have selected ${selectedCategory}`);
+    showQuestionAnswer(selectedCategory);
+}
