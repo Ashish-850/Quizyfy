@@ -1,12 +1,11 @@
-const dataset = require("./data");
-const quiz = require("./quizLogic");
+const getQuestion = require("./apiData");
+const askQuestion = require("./quiz");
 
-function startGame() {
-    console.log("🎉 Welcome to the Quiz Game!\n");
-
-    const categories = quiz.showCategories(); // This returns the list
-    const chosenCategory = quiz.getUserCategoryChoice(categories); // Then use it to get user's choice
-    quiz.runQuiz(dataset, chosenCategory);
-}
-
-startGame();
+(async () => {
+    const data = await getQuestion();
+    if (data?.results) {
+        askQuestion(data.results);
+    } else {
+        console.log("No questions available.");
+    }
+})();
